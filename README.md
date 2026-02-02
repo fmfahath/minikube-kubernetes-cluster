@@ -46,7 +46,7 @@ Ensure the following tools are installed on your system:
 
 ## ⚙️ Installation & Setup
 
-### 1. Create Docker image for the sample app
+## Step 1️⃣. Create Docker image for the sample app
 
 ```bash
 docker login
@@ -60,9 +60,16 @@ docker push <username>/sample-app:latest
 
 Sample output:
 
-<img width="1573" height="752" alt="image" src="https://github.com/user-attachments/assets/b05b5d2f-0f29-4ec1-81b1-7c2cd01afa24" />
+<img width="1585" height="546" alt="image" src="https://github.com/user-attachments/assets/c6ed439d-2482-47e1-9f31-b8d340249ce3" />
 
-### 2. Start the Minikube cluster with the default driver
+<img width="1572" height="489" alt="image" src="https://github.com/user-attachments/assets/a95c790e-fdc3-4324-a557-f3fdd96e064a" />
+
+<img width="1584" height="677" alt="image" src="https://github.com/user-attachments/assets/17dbc092-394f-4c93-8f3d-745a919f8de3" />
+
+
+---
+
+## Step 2️⃣. Start the Minikube cluster with the default driver
 
 ```bash
 minikube start
@@ -70,9 +77,11 @@ minikube start
 
 Sample output:
 
-<img width="1593" height="366" alt="image" src="https://github.com/user-attachments/assets/876f88b3-1e2f-4206-b48f-6557f74e3f09" />
+<img width="1603" height="372" alt="image" src="https://github.com/user-attachments/assets/e591c2df-f446-4dbd-ba54-dac497232fd3" />
 
-### 3️⃣ Create a Deployment
+---
+
+## Step 3️⃣. Create a Deployment
 
 Deploy your application to the Kubernetes cluster using the `deployment.yaml` file.
 
@@ -96,7 +105,7 @@ spec:
     spec:
       containers:
         - name: python-app
-          image: fmfahathdev/python-demo:v1
+          image: fmfahathdev/python-demo-img:v1
           ports:
             - containerPort: 8000
 
@@ -108,7 +117,7 @@ Apply the Deployment configuration:
  kubectl apply -f deployment.yaml
 ```
 
-> ⚠️ **Note:** In the `deployment.yaml` file, replace `image: fmfahathdev/python-demo:v1` with your own Docker Hub image: `<dockerhub-username>/image-name:tag`
+> ⚠️ **Note:** In the `deployment.yaml` file, replace `image: fmfahathdev/python-demo-img:v1` with your own Docker Hub image: `<dockerhub-username>/image-name:tag`
 
 Now that the cluster is created, it currently has:
 
@@ -118,11 +127,12 @@ Now that the cluster is created, it currently has:
 
 Sample output:
 
-<img width="1586" height="458" alt="image" src="https://github.com/user-attachments/assets/1f58b2ca-1972-4773-934a-08abfa7de7bd" />
+<img width="1589" height="521" alt="image" src="https://github.com/user-attachments/assets/6c5cc35f-bdd2-41e9-8f56-4906aa3b4899" />
+
 
 ---
 
-### 4. Self-Healing Test (ReplicaSet Behavior)
+## Step 4️⃣. Self-Healing Test (ReplicaSet Behavior)
 
 To verify Kubernetes self-healing, delete one of the running Pods.  
 The ReplicaSet will automatically create a new Pod to maintain the desired number of replicas.
@@ -140,11 +150,12 @@ To verify this, use the watch command
 
 Sample output:
 
-<img width="1558" height="440" alt="image" src="https://github.com/user-attachments/assets/8d63e696-fd5b-4524-b3af-202c3b958762" />
+<img width="1576" height="433" alt="image" src="https://github.com/user-attachments/assets/5b442b7c-6441-48b6-bb0b-77e02c7538f6" />
+
 
 ---
 
-### 5️⃣ Create a Service of type **NodePort**
+## Step 5️⃣. Create a Service of type **NodePort**
 
 Create a Kubernetes Service to expose the application outside the cluster using a **NodePort** service.
 
@@ -176,7 +187,71 @@ Now, new service `sample-python-app-service` created in the cluster
 
 Sample output:
 
-<img width="1592" height="434" alt="image" src="https://github.com/user-attachments/assets/c0753a19-a469-4302-8142-022308735768" />
+<img width="1580" height="538" alt="image" src="https://github.com/user-attachments/assets/a66100cb-2fd6-468a-90f9-2f9a2a991b96" />
+
+---
+
+## Step 6️⃣: Accessing the Application Over the Network
+
+### 🔹 Method 1: Accessing Using the Pod’s Cluster IP  *(Inside the Minikube cluster)*
+
+**Steps:**
+
+```bash
+minikube ssh
+curl -L http://10.244.0.31:8000/demo
+```
+
+**output**: The HTML output of the application will be displayed in the terminal.
+
+Sample output:
+
+<img width="1586" height="772" alt="image" src="https://github.com/user-attachments/assets/ff906a60-1eee-47e0-b825-3f7083f830e0" />
+
+### 🔹 Method 2: Accessing Using the Service’s Cluster IP  *(Inside the Minikube cluster)*
+
+**Steps:**
+
+```bash
+minikube ssh
+curl -L http://10.111.156.103:80/demo
+```
+
+**output**: The HTML output of the application will be displayed in the terminal.
+
+Sample output:
+
+<img width="1577" height="754" alt="image" src="https://github.com/user-attachments/assets/074cf066-533a-4a89-9bff-e82c6a7c116a" />
+
+### 🔹 Method 3: Accessing Using Minikube NodePort IP *(Outside the cluster but inside the local / organization network)*
+
+**Steps:**
+
+```bash
+curl -L http://192.168.49.2:30007/demo
+```
+
+**output**: The HTML output of the application will be displayed in the terminal.
+
+Sample output:
+
+<img width="1570" height="769" alt="image" src="https://github.com/user-attachments/assets/a158daa6-304c-4808-b2d1-b105e4bedab4" />
+
+### 🔹 Method 4: Accessing via Web Browser Using Minikube NodePort
+
+**Steps:**
+
+```bash
+http://192.168.49.2:30007/demo
+```
+
+**output**: The application homepage will be displayed in the browser.
+
+Sample output:
+
+<img width="1024" height="768" alt="Screenshot from 2026-02-03 02-41-14" src="https://github.com/user-attachments/assets/065e688d-86c2-4221-87f4-da8556568166" />
+
+
 
 
 
